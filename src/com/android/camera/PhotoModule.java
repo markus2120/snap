@@ -2862,8 +2862,9 @@ public class PhotoModule extends BaseModule<PhotoUI> implements
                 return false;
             case KeyEvent.KEYCODE_CAMERA:
             case KeyEvent.KEYCODE_HEADSETHOOK:
-                if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                    onShutterButtonClick();
+                if (mFirstTimeInitialized && event.getRepeatCount() == 0
+                        && CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()) {
+                    onShutterButtonFocus(true);
                 }
                 return true;
             case KeyEvent.KEYCODE_DPAD_CENTER:
@@ -2890,6 +2891,12 @@ public class PhotoModule extends BaseModule<PhotoUI> implements
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
+            case KeyEvent.KEYCODE_HEADSETHOOK:
+                if (CameraActivity.mPowerShutter && !CameraUtil.hasCameraKey()
+                        && mFirstTimeInitialized) {
+                    onShutterButtonClick();
+                }
+                return true;
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_MEDIA_NEXT:
